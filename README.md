@@ -1,8 +1,13 @@
-# software
+# Bus Flagging Application
 
-A new Flutter project.
+A mobile app that will assist the visually impaired flagging down the bus arriving at stops.
 
-## Getting Started
+## Functions
+- Detect the nearest bus stop
+- Track arrival time of buses at the bus stop
+- Send notification when chosen bus arrive
+
+## Getting Started with Flutter
 
 This project is a starting point for a Flutter application.
 
