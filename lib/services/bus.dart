@@ -2,19 +2,20 @@ import 'dart:convert';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter/services.dart';
 import 'package:software/models/BusStop.dart';
+import 'package:software/models/BusStopList.dart';
 
-Future<List<BusStop>> getBusStops() async {
-  final String response =
-      await rootBundle.loadString('assets/bus_stops/bus_stops_data.json');
-  final jsonBusList = await json.decode(response)['value'];
-  List<BusStop> busStops =
-      List<BusStop>.from(jsonBusList.map((i) => BusStop.fromJson(i)));
+// Future<List<BusStop>> getBusStops() async {
+//   final String response =
+//       await rootBundle.loadString('assets/bus_stops/bus_stops_data.json');
+//   final jsonBusList = await json.decode(response)['value'];
+//   List<BusStop> busStops =
+//       List<BusStop>.from(jsonBusList.map((i) => BusStop.fromJson(i)));
 
-  return busStops;
-}
+//   return busStops;
+// }
 
 Future<BusStop> getNearestBusStop() async {
-  List<BusStop> busStops = await getBusStops();
+  List<BusStop> busStops = await BusStopList.getBusStops();
   Position userPosition = await _determinePosition();
   BusStop selectedStop = findNearestBusStop(userPosition, busStops);
 
@@ -22,7 +23,7 @@ Future<BusStop> getNearestBusStop() async {
 }
 
 Future<List<String>> getSuggestions(String query) async {
-  List<BusStop> busStops = await getBusStops();
+  List<BusStop> busStops = await BusStopList.getBusStops();
   List<String> busStopStrings = busStops.map((busStop) {
     return '${busStop.busStopCode} ${busStop.description}';
   }).toList();

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:software/screens/welcome.dart';
-import 'package:software/screens/bus-list.dart';
-import 'package:software/screens/bus-choose.dart';
+import 'package:software/screens/arrival.dart';
+import 'package:software/screens/stops_choosing.dart';
 
 void main() {
   runApp(const MyApp());

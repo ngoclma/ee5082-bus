@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:software/screens/bus-list.dart';
+import 'package:software/screens/arrival.dart';
 import 'package:software/models/BusStop.dart';
-import 'package:software/services/stop-nearest.dart';
+import 'package:software/services/bus.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 class BusDropdownScreen extends StatefulWidget {
@@ -669,7 +669,7 @@ class _BusDropdownScreenState extends State<BusDropdownScreen> {
                           selectedStop: widget.detectedStop)),
                 );
               },
-              child: Text('Submit'),
+              child: const Text('Submit'),
             ),
             const SizedBox(height: 20),
             // IconButton(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:software/screens/bus-choose.dart';
+import 'package:software/screens/stops_choosing.dart';
 import 'package:software/screens/connection.dart';
-import 'package:software/services/stop-nearest.dart';
+import 'package:software/services/bus.dart';
 import 'package:software/models/BusStop.dart';
 
 class WelcomeScreen extends StatelessWidget {

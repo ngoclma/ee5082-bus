@@ -59,8 +59,8 @@ class _BusArrivalScreenState extends State<BusArrivalScreen> {
           final arrival = _arrivals[index];
           return ListTile(
             title: Text('Bus ${arrival['ServiceNo']}'),
-            subtitle:
-                Text('Arriving in ${timeDisplay(getDifference(arrival['NextBus']['EstimatedArrival']))}'),
+            subtitle: Text(
+                'Arriving in ${timeDisplay(getDifference(arrival['NextBus']['EstimatedArrival']))}'),
           );
         },
       ),
