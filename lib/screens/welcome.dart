@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:software/screens/bus-choose.dart';
+import 'package:software/screens/connection.dart';
 import 'package:software/services/stop-nearest.dart';
 import 'package:software/models/BusStop.dart';
 
@@ -9,29 +10,61 @@ class WelcomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Welcome'),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.settings),
+            onPressed: () async {
+              await Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ConnectionScreen()),
+              );
+            },
+          ),
+        ],
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'Bus Flagging Assistant',
+              'Welcome to BUSEYE',
               style: TextStyle(
-                fontSize: 24.0,
+                fontSize: 32.0,
                 fontWeight: FontWeight.bold,
+                color: Colors.red,
               ),
             ),
             SizedBox(height: 20.0),
-            ElevatedButton(
-              onPressed: () async {
-                BusStop nearestStop = await getNearestBusStop();
-                await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          BusDropdownScreen(selectedStop: nearestStop)),
-                );
-              },
-              child: Text('Start journey'),
+            Text(
+              'Bus Flagging Assistant',
+              style: TextStyle(
+                fontSize: 24.0,
+                fontWeight: FontWeight.normal,
+              ),
+            ),
+            SizedBox(height: 20.0),
+            Container(
+              width: 200.0,
+              height: 200.0,
+              child: ElevatedButton(
+                onPressed: () async {
+                  BusStop nearestStop = await getNearestBusStop();
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            BusDropdownScreen(detectedStop: nearestStop)),
+                  );
+                },
+                child: Text(
+                  'Start trip',
+                  style: TextStyle(
+                    fontSize: 28.0, // Adjust the font size
+                  ),
+                ),
+              ),
             ),
           ],
         ),

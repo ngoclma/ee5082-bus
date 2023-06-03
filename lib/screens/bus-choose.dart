@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:software/screens/bus-list.dart';
 import 'package:software/models/BusStop.dart';
+import 'package:software/services/stop-nearest.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 class BusDropdownScreen extends StatefulWidget {
-  final BusStop? selectedStop;
-  const BusDropdownScreen({Key? key, @required this.selectedStop})
+  final BusStop? detectedStop;
+  const BusDropdownScreen({Key? key, @required this.detectedStop})
       : super(key: key);
 
   @override
@@ -12,7 +14,12 @@ class BusDropdownScreen extends StatefulWidget {
 }
 
 class _BusDropdownScreenState extends State<BusDropdownScreen> {
+  final TextEditingController _typeAheadController = TextEditingController();
+  SuggestionsBoxController suggestionBoxController = SuggestionsBoxController();
+
   String? selectedBus;
+  String? startStop;
+  String? endStop;
 
   final busNumbers = [
     '2',
@@ -545,44 +552,79 @@ class _BusDropdownScreenState extends State<BusDropdownScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Query'),
+        title: const Text('Query'),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'You are at ${widget.selectedStop?.description}',
+              'You are at ${widget.detectedStop?.description}',
               style: TextStyle(
                 fontSize: 24.0,
                 fontWeight: FontWeight.bold,
                 color: Colors.blue[900],
               ),
             ),
-            SizedBox(height: 20),
-            DropdownButtonFormField(
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Select a Bus',
+            const SizedBox(height: 20),
+            Text(
+              'You are heading to:',
+              style: TextStyle(
+                fontSize: 24.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.blue[900],
               ),
-              value: selectedBus,
-              items: busNumbers.map((bus) {
-                return DropdownMenuItem(
-                  value: bus,
-                  child: Text(bus),
-                );
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  selectedBus = value as String;
-                });
-              },
-              onSaved: (value) {
-                setState(() {
-                  selectedBus = value as String;
-                });
-              },
             ),
+            TypeAheadFormField(
+              textFieldConfiguration: TextFieldConfiguration(
+                decoration: InputDecoration(labelText: 'Destination bus stop'),
+                controller: this._typeAheadController,
+              ),
+              suggestionsCallback: (pattern) {
+                return getSuggestions(pattern);
+              },
+              itemBuilder: (context, String suggestion) {
+                return ListTile(
+                  title: Text(suggestion),
+                );
+              },
+              itemSeparatorBuilder: (context, index) {
+                return Divider();
+              },
+              transitionBuilder: (context, suggestionsBox, controller) {
+                return suggestionsBox;
+              },
+              onSuggestionSelected: (String suggestion) {
+                this._typeAheadController.text = suggestion;
+              },
+              suggestionsBoxController: suggestionBoxController,
+              validator: (value) =>
+                  value!.isEmpty ? 'Please select a bus stop' : null,
+              onSaved: (value) => this.endStop = value,
+            ),
+            // DropdownButtonFormField(
+            //   decoration: InputDecoration(
+            //     border: OutlineInputBorder(),
+            //     labelText: 'Select a Bus',
+            //   ),
+            //   value: selectedBus,
+            //   items: busNumbers.map((bus) {
+            //     return DropdownMenuItem(
+            //       value: bus,
+            //       child: Text(bus),
+            //     );
+            //   }).toList(),
+            //   onChanged: (value) {
+            //     setState(() {
+            //       selectedBus = value as String;
+            //     });
+            //   },
+            //   onSaved: (value) {
+            //     setState(() {
+            //       selectedBus = value as String;
+            //     });
+            //   },
+            // ),
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () async {
@@ -591,7 +633,7 @@ class _BusDropdownScreenState extends State<BusDropdownScreen> {
                   MaterialPageRoute(
                       builder: (context) => BusArrivalScreen(
                           selectedBus: selectedBus,
-                          selectedStop: widget.selectedStop)),
+                          selectedStop: widget.detectedStop)),
                 );
               },
               child: Text('Submit'),

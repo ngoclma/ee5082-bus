@@ -3,16 +3,34 @@ import 'package:geolocator/geolocator.dart';
 import 'package:flutter/services.dart';
 import 'package:software/models/BusStop.dart';
 
-Future<BusStop> getNearestBusStop() async {
+Future<List<BusStop>> getBusStops() async {
   final String response =
       await rootBundle.loadString('assets/bus_stops/bus_stops_data.json');
   final jsonBusList = await json.decode(response)['value'];
   List<BusStop> busStops =
       List<BusStop>.from(jsonBusList.map((i) => BusStop.fromJson(i)));
+
+  return busStops;
+}
+
+Future<BusStop> getNearestBusStop() async {
+  List<BusStop> busStops = await getBusStops();
   Position userPosition = await _determinePosition();
   BusStop selectedStop = findNearestBusStop(userPosition, busStops);
 
   return selectedStop;
+}
+
+Future<List<String>> getSuggestions(String query) async {
+  List<BusStop> busStops = await getBusStops();
+  List<String> busStopStrings = busStops.map((busStop) {
+    return '${busStop.busStopCode} ${busStop.description}';
+  }).toList();
+  List<String> matches = <String>[];
+  matches.addAll(busStopStrings);
+
+  matches.retainWhere((s) => s.toLowerCase().contains(query.toLowerCase()));
+  return matches;
 }
 
 /*
