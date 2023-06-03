@@ -14,7 +14,12 @@ class BusDropdownScreen extends StatefulWidget {
 }
 
 class _BusDropdownScreenState extends State<BusDropdownScreen> {
-  final TextEditingController _typeAheadController = TextEditingController();
+  late final TextEditingController _typeAheadControllerStartStop =
+      TextEditingController(
+          text:
+              '${widget.detectedStop?.busStopCode} ${widget.detectedStop?.description}');
+  final TextEditingController _typeAheadControllerEndStop =
+      TextEditingController();
   SuggestionsBoxController suggestionBoxController = SuggestionsBoxController();
 
   String? selectedBus;
@@ -559,16 +564,7 @@ class _BusDropdownScreenState extends State<BusDropdownScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'You are at ${widget.detectedStop?.description}',
-              style: TextStyle(
-                fontSize: 24.0,
-                fontWeight: FontWeight.bold,
-                color: Colors.blue[900],
-              ),
-            ),
-            const SizedBox(height: 20),
-            Text(
-              'You are heading to:',
+              'You are at:',
               style: TextStyle(
                 fontSize: 24.0,
                 fontWeight: FontWeight.bold,
@@ -577,8 +573,8 @@ class _BusDropdownScreenState extends State<BusDropdownScreen> {
             ),
             TypeAheadFormField(
               textFieldConfiguration: TextFieldConfiguration(
-                decoration: InputDecoration(labelText: 'Destination bus stop'),
-                controller: this._typeAheadController,
+                decoration: InputDecoration(labelText: 'Starting bus stop'),
+                controller: _typeAheadControllerStartStop,
               ),
               suggestionsCallback: (pattern) {
                 return getSuggestions(pattern);
@@ -589,18 +585,55 @@ class _BusDropdownScreenState extends State<BusDropdownScreen> {
                 );
               },
               itemSeparatorBuilder: (context, index) {
-                return Divider();
+                return const Divider();
               },
               transitionBuilder: (context, suggestionsBox, controller) {
                 return suggestionsBox;
               },
               onSuggestionSelected: (String suggestion) {
-                this._typeAheadController.text = suggestion;
+                _typeAheadControllerStartStop.text = suggestion;
               },
               suggestionsBoxController: suggestionBoxController,
               validator: (value) =>
                   value!.isEmpty ? 'Please select a bus stop' : null,
-              onSaved: (value) => this.endStop = value,
+              onSaved: (value) => startStop = value,
+            ),
+            const SizedBox(height: 40),
+            Text(
+              'You are heading to:',
+              style: TextStyle(
+                fontSize: 24.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.blue[900],
+              ),
+            ),
+            TypeAheadFormField(
+              textFieldConfiguration: TextFieldConfiguration(
+                decoration:
+                    const InputDecoration(labelText: 'Destination bus stop'),
+                controller: _typeAheadControllerEndStop,
+              ),
+              suggestionsCallback: (pattern) {
+                return getSuggestions(pattern);
+              },
+              itemBuilder: (context, String suggestion) {
+                return ListTile(
+                  title: Text(suggestion),
+                );
+              },
+              itemSeparatorBuilder: (context, index) {
+                return const Divider();
+              },
+              transitionBuilder: (context, suggestionsBox, controller) {
+                return suggestionsBox;
+              },
+              onSuggestionSelected: (String suggestion) {
+                _typeAheadControllerEndStop.text = suggestion;
+              },
+              suggestionsBoxController: suggestionBoxController,
+              validator: (value) =>
+                  value!.isEmpty ? 'Please select a bus stop' : null,
+              onSaved: (value) => endStop = value,
             ),
             // DropdownButtonFormField(
             //   decoration: InputDecoration(
@@ -625,7 +658,7 @@ class _BusDropdownScreenState extends State<BusDropdownScreen> {
             //     });
             //   },
             // ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () async {
                 await Navigator.push(
@@ -638,7 +671,7 @@ class _BusDropdownScreenState extends State<BusDropdownScreen> {
               },
               child: Text('Submit'),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             // IconButton(
             //   onPressed: () {
             //     // Microphone button pressed

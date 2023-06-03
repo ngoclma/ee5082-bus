@@ -11,14 +11,15 @@ class WelcomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Welcome'),
+        title: const Text('Welcome'),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.settings),
+            icon: const Icon(Icons.settings),
             onPressed: () async {
               await Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => ConnectionScreen()),
+                MaterialPageRoute(
+                    builder: (context) => const ConnectionScreen()),
               );
             },
           ),
@@ -28,7 +29,7 @@ class WelcomeScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
+            const Text(
               'Welcome to BUSEYE',
               style: TextStyle(
                 fontSize: 32.0,
@@ -37,7 +38,7 @@ class WelcomeScreen extends StatelessWidget {
               ),
             ),
             SizedBox(height: 20.0),
-            Text(
+            const Text(
               'Bus Flagging Assistant',
               style: TextStyle(
                 fontSize: 24.0,

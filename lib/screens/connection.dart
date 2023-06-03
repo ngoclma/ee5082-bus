@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 
 class ConnectionScreen extends StatefulWidget {
+  const ConnectionScreen({Key? key}) : super(key: key);
+
   @override
   _ConnectionScreenState createState() => _ConnectionScreenState();
 }
@@ -13,9 +15,9 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
   // Initializing the Bluetooth connection state to be unknown
   BluetoothState _bluetoothState = BluetoothState.UNKNOWN;
   // Initializing a global key, as it would help us in showing a SnackBar later
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   // Get the instance of the Bluetooth
-  FlutterBluetoothSerial _bluetooth = FlutterBluetoothSerial.instance;
+  final FlutterBluetoothSerial _bluetooth = FlutterBluetoothSerial.instance;
   // Track the Bluetooth connection with the remote device
   BluetoothConnection? connection;
 
@@ -136,11 +138,11 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
           title: const Text("Connect to device"),
           actions: <Widget>[
             TextButton.icon(
-              icon: Icon(
+              icon: const Icon(
                 Icons.refresh,
                 color: Colors.white,
               ),
-              label: Text(
+              label: const Text(
                 "Refresh",
                 style: TextStyle(
                   color: Colors.white,
@@ -289,13 +291,13 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                                 onPressed: _connected
                                     ? _sendOnMessageToBluetooth
                                     : null,
-                                child: Text("ON"),
+                                child: const Text("ON"),
                               ),
                               TextButton(
                                 onPressed: _connected
                                     ? _sendOffMessageToBluetooth
                                     : null,
-                                child: Text("OFF"),
+                                child: const Text("OFF"),
                               ),
                             ],
                           ),
@@ -316,7 +318,7 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Text(
+                      const Text(
                         "NOTE: If you cannot find the device in the list, please pair the device by going to the bluetooth settings",
                         style: TextStyle(
                           fontSize: 15,
@@ -324,9 +326,9 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                           color: Colors.red,
                         ),
                       ),
-                      SizedBox(height: 15),
+                      const SizedBox(height: 15),
                       ElevatedButton(
-                        child: Text("Bluetooth Settings"),
+                        child: const Text("Bluetooth Settings"),
                         onPressed: () {
                           FlutterBluetoothSerial.instance.openSettings();
                         },
@@ -444,7 +446,7 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
   // Method to send message,
   // for turning the Bluetooth device on
   void _sendOnMessageToBluetooth() async {
-    connection!.output.add(utf8.encoder.convert("1" + "\r\n"));
+    connection!.output.add(utf8.encoder.convert('1' + '\r\n'));
     await connection!.output.allSent;
     show('Device Turned On');
     setState(() {
@@ -467,12 +469,12 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
   // taking message as the text
   Future show(
     String message, {
-    Duration duration: const Duration(seconds: 3),
+    Duration duration = const Duration(seconds: 3),
   }) async {
-    await new Future.delayed(new Duration(milliseconds: 100));
+    await Future.delayed(const Duration(milliseconds: 100));
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: new Text(
+        content: Text(
           message,
         ),
         duration: duration,
