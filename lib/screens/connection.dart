@@ -385,7 +385,7 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
             } else {
               print('Disconnected remotely!');
             }
-            if (this.mounted) {
+            if (mounted) {
               setState(() {});
             }
           });

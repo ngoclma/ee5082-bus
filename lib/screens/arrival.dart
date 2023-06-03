@@ -6,9 +6,13 @@ import 'package:software/services/time.dart';
 
 class BusArrivalScreen extends StatefulWidget {
   final String? selectedBus;
-  final BusStop? selectedStop;
+  final String? startStopCode;
+  final String? endStopCode;
   const BusArrivalScreen(
-      {Key? key, @required this.selectedBus, @required this.selectedStop})
+      {Key? key,
+      @required this.selectedBus,
+      @required this.startStopCode,
+      @required this.endStopCode})
       : super(key: key);
 
   @override
@@ -33,9 +37,8 @@ class _BusArrivalScreenState extends State<BusArrivalScreen> {
       'AccountKey': apiKey,
     };
 
-    String? busStopCode = widget.selectedStop?.busStopCode;
-    final response =
-        await http.get(Uri.parse(apiUrl + busStopCode!), headers: headers);
+    final response = await http.get(Uri.parse(apiUrl + widget.startStopCode!),
+        headers: headers);
 
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);

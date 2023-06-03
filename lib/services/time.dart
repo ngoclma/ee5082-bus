@@ -3,10 +3,6 @@ int getDifference(String busETA) {
   final busTime = DateTime.parse(busETA);
   final difference = busTime.difference(current).inMinutes;
 
-  print(busETA);
-  print(busTime);
-  print(current);
-  print(difference);
   return difference;
 }
 

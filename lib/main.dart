@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:software/screens/welcome.dart';
-import 'package:software/screens/arrival.dart';
-import 'package:software/screens/stops_choosing.dart';
 
 void main() {
   runApp(const MyApp());
@@ -21,8 +19,6 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => const WelcomeScreen(),
-        '/get-eta': (context) => const BusArrivalScreen(),
-        '/get-bus': (context) => const BusDropdownScreen(),
       },
     );
   }

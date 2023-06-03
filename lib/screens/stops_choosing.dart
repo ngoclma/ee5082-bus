@@ -573,7 +573,8 @@ class _BusDropdownScreenState extends State<BusDropdownScreen> {
             ),
             TypeAheadFormField(
               textFieldConfiguration: TextFieldConfiguration(
-                decoration: InputDecoration(labelText: 'Starting bus stop'),
+                decoration:
+                    const InputDecoration(labelText: 'Starting bus stop'),
                 controller: _typeAheadControllerStartStop,
               ),
               suggestionsCallback: (pattern) {
@@ -666,7 +667,12 @@ class _BusDropdownScreenState extends State<BusDropdownScreen> {
                   MaterialPageRoute(
                       builder: (context) => BusArrivalScreen(
                           selectedBus: selectedBus,
-                          selectedStop: widget.detectedStop)),
+                          startStopCode: _typeAheadControllerStartStop.text
+                              .toString()
+                              .split(" ")[0],
+                          endStopCode: _typeAheadControllerEndStop.text
+                              .toString()
+                              .split(" ")[0])),
                 );
               },
               child: const Text('Submit'),

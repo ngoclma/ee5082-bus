@@ -1,18 +1,6 @@
-import 'dart:convert';
 import 'package:geolocator/geolocator.dart';
-import 'package:flutter/services.dart';
 import 'package:software/models/BusStop.dart';
 import 'package:software/models/BusStopList.dart';
-
-// Future<List<BusStop>> getBusStops() async {
-//   final String response =
-//       await rootBundle.loadString('assets/bus_stops/bus_stops_data.json');
-//   final jsonBusList = await json.decode(response)['value'];
-//   List<BusStop> busStops =
-//       List<BusStop>.from(jsonBusList.map((i) => BusStop.fromJson(i)));
-
-//   return busStops;
-// }
 
 Future<BusStop> getNearestBusStop() async {
   List<BusStop> busStops = await BusStopList.getBusStops();
@@ -70,7 +58,6 @@ Future<Position> _determinePosition() async {
 BusStop findNearestBusStop(Position userLocation, List<BusStop> busStops) {
   double minDistance = double.infinity;
   BusStop nearestBusStop = busStops.first;
-  int i = 1;
   for (BusStop busStop in busStops) {
     // double distance = getDistance(userLocation, busStop);
     double distance = Geolocator.distanceBetween(userLocation.latitude,
