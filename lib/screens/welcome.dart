@@ -37,7 +37,7 @@ class WelcomeScreen extends StatelessWidget {
                 color: Colors.red,
               ),
             ),
-            SizedBox(height: 20.0),
+            const SizedBox(height: 20.0),
             const Text(
               'Bus Flagging Assistant',
               style: TextStyle(
@@ -45,8 +45,8 @@ class WelcomeScreen extends StatelessWidget {
                 fontWeight: FontWeight.normal,
               ),
             ),
-            SizedBox(height: 20.0),
-            Container(
+            const SizedBox(height: 20.0),
+            SizedBox(
               width: 200.0,
               height: 200.0,
               child: ElevatedButton(
@@ -59,7 +59,7 @@ class WelcomeScreen extends StatelessWidget {
                             BusDropdownScreen(detectedStop: nearestStop)),
                   );
                 },
-                child: Text(
+                child: const Text(
                   'Start trip',
                   style: TextStyle(
                     fontSize: 28.0, // Adjust the font size

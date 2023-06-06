@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
+// import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
 class ConnectionScreen extends StatefulWidget {
   const ConnectionScreen({Key? key}) : super(key: key);
@@ -25,17 +26,17 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
 
   bool isDisconnecting = false;
 
-  Map<String, Color?> colors = {
+  Map<String, Color> colors = {
     'onBorderColor': Colors.green,
     'offBorderColor': Colors.red,
     'neutralBorderColor': Colors.transparent,
-    'onTextColor': Colors.green[700],
-    'offTextColor': Colors.red[700],
+    'onTextColor': Colors.green.shade700,
+    'offTextColor': Colors.red.shade700,
     'neutralTextColor': Colors.blue,
   };
 
   // To track whether the device is still connected to Bluetooth
-  bool get isConnected => connection != null && connection!.isConnected;
+  bool get isConnected => connection!.isConnected;
 
   // Define some variables, which will be required later
   List<BluetoothDevice> _devicesList = [];
@@ -112,8 +113,10 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
     // To get the list of paired devices
     try {
       devices = await _bluetooth.getBondedDevices();
-    } on PlatformException {
-      print("Error");
+      print(devices);
+    } on PlatformException catch (e) {
+      print("Error in PairedDevice");
+      print(e);
     }
 
     // It is an error to call [setState] unless [mounted] is true.
@@ -137,29 +140,34 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
         appBar: AppBar(
           title: const Text("Connect to device"),
           actions: <Widget>[
-            TextButton.icon(
-              icon: const Icon(
-                Icons.refresh,
-                color: Colors.white,
-              ),
-              label: const Text(
-                "Refresh",
-                style: TextStyle(
+            Container(
+              margin: EdgeInsets.all(5),
+              child: TextButton.icon(
+                icon: const Icon(
+                  Icons.refresh,
                   color: Colors.white,
                 ),
+                label: const Text(
+                  "Refresh",
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+                style: ButtonStyle(
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                          side: const BorderSide(color: Colors.white70))),
+                ),
+                onPressed: () async {
+                  // So, that when new devices are paired
+                  // while the app is running, user can refresh
+                  // the paired devices list.
+                  await getPairedDevices().then((_) {
+                    show('Device list refreshed');
+                  });
+                },
               ),
-              // shape: RoundedRectangleBorder(
-              //   borderRadius: BorderRadius.circular(30),
-              // ),
-              // splashColor: Colors.deepPurple,
-              onPressed: () async {
-                // So, that when new devices are paired
-                // while the app is running, user can refresh
-                // the paired devices list.
-                await getPairedDevices().then((_) {
-                  show('Device list refreshed');
-                });
-              },
             ),
           ],
         ),
@@ -259,14 +267,14 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                       padding: const EdgeInsets.all(16.0),
                       child: Card(
                         shape: RoundedRectangleBorder(
-                          // side: BorderSide(
-                          //   color: _deviceState == 0
-                          //       ? colors['neutralBorderColor']
-                          //       : _deviceState == 1
-                          //           ? colors['onBorderColor']
-                          //           : colors['offBorderColor'],
-                          //   width: 3,
-                          // ),
+                          side: BorderSide(
+                            color: _deviceState == 0
+                                ? colors['neutralBorderColor'] as Color
+                                : _deviceState == 1
+                                    ? colors['onBorderColor'] as Color
+                                    : colors['offBorderColor'] as Color,
+                            width: 3,
+                          ),
                           borderRadius: BorderRadius.circular(4.0),
                         ),
                         elevation: _deviceState == 0 ? 4 : 0,
@@ -307,7 +315,7 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                   ],
                 ),
                 Container(
-                  color: Colors.blue,
+                  color: Colors.red,
                 ),
               ],
             ),
@@ -352,12 +360,12 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
         child: Text('NONE'),
       ));
     } else {
-      _devicesList.forEach((device) {
+      for (var device in _devicesList) {
         items.add(DropdownMenuItem(
           value: device,
           child: Text(device.name!),
         ));
-      });
+      }
     }
     return items;
   }
@@ -400,31 +408,31 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
     }
   }
 
-  // void _onDataReceived(Uint8List data) {
-  //   // Allocate buffer for parsed data
-  //   int backspacesCounter = 0;
-  //   data.forEach((byte) {
-  //     if (byte == 8 || byte == 127) {
-  //       backspacesCounter++;
-  //     }
-  //   });
-  //   Uint8List buffer = Uint8List(data.length - backspacesCounter);
-  //   int bufferIndex = buffer.length;
+  void _onDataReceived(Uint8List data) {
+    // Allocate buffer for parsed data
+    int backspacesCounter = 0;
+    for (var byte in data) {
+      if (byte == 8 || byte == 127) {
+        backspacesCounter++;
+      }
+    }
+    Uint8List buffer = Uint8List(data.length - backspacesCounter);
+    int bufferIndex = buffer.length;
 
-  //   // Apply backspace control character
-  //   backspacesCounter = 0;
-  //   for (int i = data.length - 1; i >= 0; i--) {
-  //     if (data[i] == 8 || data[i] == 127) {
-  //       backspacesCounter++;
-  //     } else {
-  //       if (backspacesCounter > 0) {
-  //         backspacesCounter--;
-  //       } else {
-  //         buffer[--bufferIndex] = data[i];
-  //       }
-  //     }
-  //   }
-  // }
+    // Apply backspace control character
+    backspacesCounter = 0;
+    for (int i = data.length - 1; i >= 0; i--) {
+      if (data[i] == 8 || data[i] == 127) {
+        backspacesCounter++;
+      } else {
+        if (backspacesCounter > 0) {
+          backspacesCounter--;
+        } else {
+          buffer[--bufferIndex] = data[i];
+        }
+      }
+    }
+  }
 
   // Method to disconnect bluetooth
   void _disconnect() async {
