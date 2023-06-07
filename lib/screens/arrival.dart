@@ -1,7 +1,7 @@
 import 'dart:convert';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:software/models/BusStop.dart';
 import 'package:software/services/time.dart';
 
 class BusArrivalScreen extends StatefulWidget {
@@ -24,11 +24,22 @@ class _BusArrivalScreenState extends State<BusArrivalScreen> {
       'http://datamall2.mytransport.sg/ltaodataservice/BusArrivalv2?BusStopCode=';
   final String apiKey = 'W7VLu7KxRJ2uzAoc36PusA==';
   List _arrivals = [];
+  Timer? _timer;
 
   @override
   void initState() {
     super.initState();
     _fetchData();
+    // fetch data every minute
+    _timer = Timer.periodic(const Duration(minutes: 1), (Timer timer) {
+      _fetchData();
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
   }
 
   Future<void> _fetchData() async {

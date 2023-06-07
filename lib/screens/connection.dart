@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
-// import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
 class ConnectionScreen extends StatefulWidget {
   const ConnectionScreen({Key? key}) : super(key: key);
@@ -98,9 +97,11 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
     if (_bluetoothState == BluetoothState.STATE_OFF) {
       await FlutterBluetoothSerial.instance.requestEnable();
       await getPairedDevices();
+      print("help me true");
       return true;
     } else {
       await getPairedDevices();
+      print("help me false");
     }
     return false;
   }

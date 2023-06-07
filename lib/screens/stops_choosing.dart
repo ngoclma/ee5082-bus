@@ -1,30 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:software/screens/arrival.dart';
+import 'package:software/screens/connection.dart';
 import 'package:software/models/BusStop.dart';
 import 'package:software/services/bus.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 class BusDropdownScreen extends StatefulWidget {
-  final BusStop? detectedStop;
-  const BusDropdownScreen({Key? key, @required this.detectedStop})
-      : super(key: key);
+  //final BusStop? detectedStop;
+  const BusDropdownScreen({Key? key}) : super(key: key);
 
   @override
   _BusDropdownScreenState createState() => _BusDropdownScreenState();
 }
 
 class _BusDropdownScreenState extends State<BusDropdownScreen> {
-  late final TextEditingController _typeAheadControllerStartStop =
-      TextEditingController(
-          text:
-              '${widget.detectedStop?.busStopCode} ${widget.detectedStop?.description}');
-  final TextEditingController _typeAheadControllerEndStop =
-      TextEditingController();
-  SuggestionsBoxController suggestionBoxController = SuggestionsBoxController();
+  BusStop? detectedStop;
 
   String? selectedBus;
   String? startStop;
   String? endStop;
+
+  final TextEditingController _typeAheadControllerStartStop =
+      TextEditingController();
+  final TextEditingController _typeAheadControllerEndStop =
+      TextEditingController();
+  SuggestionsBoxController suggestionBoxController = SuggestionsBoxController();
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchDetectedStop();
+  }
+
+  Future<void> _fetchDetectedStop() async {
+    BusStop nearestStop = await getNearestBusStop();
+    setState(() {
+      detectedStop = nearestStop;
+      _typeAheadControllerStartStop.text =
+          '${detectedStop!.busStopCode} ${detectedStop!.description}';
+    });
+  }
 
   final busNumbers = [
     '2',
@@ -557,12 +572,33 @@ class _BusDropdownScreenState extends State<BusDropdownScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Query'),
+        title: const Text('Home'),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () async {
+              await Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const ConnectionScreen()),
+              );
+            },
+          ),
+        ],
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            const Text(
+              'Welcome to BUSEYE',
+              style: TextStyle(
+                fontSize: 32.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.red,
+              ),
+            ),
+            const SizedBox(height: 40.0),
             Text(
               'You are at:',
               style: TextStyle(
@@ -659,23 +695,32 @@ class _BusDropdownScreenState extends State<BusDropdownScreen> {
             //     });
             //   },
             // ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () async {
-                await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => BusArrivalScreen(
-                          selectedBus: selectedBus,
-                          startStopCode: _typeAheadControllerStartStop.text
-                              .toString()
-                              .split(" ")[0],
-                          endStopCode: _typeAheadControllerEndStop.text
-                              .toString()
-                              .split(" ")[0])),
-                );
-              },
-              child: const Text('Submit'),
+            const SizedBox(height: 40),
+            SizedBox(
+              width: 200.0,
+              height: 160.0,
+              child: ElevatedButton(
+                onPressed: () async {
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => BusArrivalScreen(
+                            selectedBus: selectedBus,
+                            startStopCode: _typeAheadControllerStartStop.text
+                                .toString()
+                                .split(" ")[0],
+                            endStopCode: _typeAheadControllerEndStop.text
+                                .toString()
+                                .split(" ")[0])),
+                  );
+                },
+                child: const Text(
+                  'Track Bus',
+                  style: TextStyle(
+                    fontSize: 28.0, // Adjust the font size
+                  ),
+                ),
+              ),
             ),
             const SizedBox(height: 20),
             // IconButton(

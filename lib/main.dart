@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:software/screens/welcome.dart';
+import 'package:software/screens/stops_choosing.dart';
 import 'dart:io';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => const WelcomeScreen(),
+        '/': (context) => const BusDropdownScreen(),
       },
     );
   }

@@ -55,8 +55,7 @@ class WelcomeScreen extends StatelessWidget {
                   await Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>
-                            BusDropdownScreen(detectedStop: nearestStop)),
+                        builder: (context) => BusDropdownScreen()),
                   );
                 },
                 child: const Text(
