@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 
+import 'package:software/screens/home.dart';
+
 class ConnectionScreen extends StatefulWidget {
   const ConnectionScreen({Key? key}) : super(key: key);
 
@@ -35,7 +37,7 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
   };
 
   // To track whether the device is still connected to Bluetooth
-  bool get isConnected => connection!.isConnected;
+  bool get isConnected => connection?.isConnected ?? false;
 
   // Define some variables, which will be required later
   List<BluetoothDevice> _devicesList = [];
@@ -80,7 +82,7 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
     // Avoid memory leak and disconnect
     if (isConnected) {
       isDisconnecting = true;
-      connection!.dispose();
+      connection?.dispose();
       connection = null;
     }
 
@@ -97,12 +99,10 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
     if (_bluetoothState == BluetoothState.STATE_OFF) {
       await FlutterBluetoothSerial.instance.requestEnable();
       await getPairedDevices();
-      print("help me true");
       return true;
-    } else {
-      await getPairedDevices();
-      print("help me false");
     }
+
+    await getPairedDevices();
     return false;
   }
 
@@ -132,7 +132,6 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
     });
   }
 
-  // Now, its time to build the UI
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -140,9 +139,15 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
         key: _scaffoldKey,
         appBar: AppBar(
           title: const Text("Connect to device"),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
           actions: <Widget>[
             Container(
-              margin: EdgeInsets.all(5),
+              margin: const EdgeInsets.all(5),
               child: TextButton.icon(
                 icon: const Icon(
                   Icons.refresh,
@@ -161,9 +166,6 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
                           side: const BorderSide(color: Colors.white70))),
                 ),
                 onPressed: () async {
-                  // So, that when new devices are paired
-                  // while the app is running, user can refresh
-                  // the paired devices list.
                   await getPairedDevices().then((_) {
                     show('Device list refreshed');
                   });

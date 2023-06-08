@@ -1,7 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:software/screens/stops_choosing.dart';
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
+
+import 'package:software/screens/home.dart';
+import 'package:software/services/theme.dart';
 
 void main() {
   if (Platform.isAndroid) {
@@ -28,12 +30,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: ('Bus Flagging Assistant'),
-      theme: ThemeData(
-        primarySwatch: Colors.red,
-      ),
+      theme: BusTheme().themedata,
       initialRoute: '/',
       routes: {
-        '/': (context) => const BusDropdownScreen(),
+        '/': (context) => const HomeScreen(),
       },
     );
   }

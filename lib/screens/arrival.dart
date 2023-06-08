@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+
+import 'package:software/screens/connection.dart';
 import 'package:software/services/time.dart';
 
 class BusArrivalScreen extends StatefulWidget {
@@ -66,6 +68,18 @@ class _BusArrivalScreenState extends State<BusArrivalScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Bus Arrival Times'),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () async {
+              await Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const ConnectionScreen()),
+              );
+            },
+          ),
+        ],
       ),
       body: ListView.builder(
         itemCount: _arrivals.length,
