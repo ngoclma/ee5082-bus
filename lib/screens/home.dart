@@ -66,7 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               Text(
                 'Where are you going?',
-                style: Theme.of(context).textTheme.titleMedium,
+                style: Theme.of(context).textTheme.titleLarge,
               ),
               const SizedBox(height: 32.0),
               Text(
