@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 
 import 'package:software/screens/connection.dart';
 import 'package:software/services/time.dart';
+import 'package:software/services/bluetooth.dart';
 
 class BusArrivalScreen extends StatefulWidget {
   final String? selectedBus;
@@ -27,15 +28,19 @@ class _BusArrivalScreenState extends State<BusArrivalScreen> {
   final String apiKey = 'W7VLu7KxRJ2uzAoc36PusA==';
   List _arrivals = [];
   Timer? _timer;
+  BluetoothUtils bluetoothUtils = BluetoothUtils();
 
   @override
   void initState() {
     super.initState();
     _fetchData();
-    // fetch data every minute
+    // Fetch data every minute
     _timer = Timer.periodic(const Duration(minutes: 1), (Timer timer) {
       _fetchData();
     });
+    // Send info to device
+    String busNo = bluetoothUtils.receiveBusNo();
+    bluetoothUtils.sendArrivalStatus(busNo, _arrivals);
   }
 
   @override
