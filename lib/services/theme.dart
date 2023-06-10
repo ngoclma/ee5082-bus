@@ -19,7 +19,7 @@ class BusTheme {
             fontSize: 24.0,
             color: Colors.blue.shade700,
             fontWeight: FontWeight.bold),
-        bodyMedium: TextStyle(
+        bodyMedium: const TextStyle(
             fontSize: 16.0,
             color: Colors.black87,
             fontWeight: FontWeight.normal),
